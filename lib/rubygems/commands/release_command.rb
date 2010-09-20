@@ -7,13 +7,14 @@ class Gem::Commands::ReleaseCommand < Gem::Command
   include GemRelease, Gem::Commands
   include Helpers, CommandOptions
 
-  OPTIONS = { :tag => false }
+  OPTIONS = { :tag => false }.merge(TagCommand::OPTIONS)
 
   attr_reader :arguments, :usage
 
   def initialize
     super 'release', 'Build a gem from a gemspec and push to rubygems.org'
     option :tag, '-t', 'Create a git tag and push --tags to origin'
+    TagCommand.set_options(self)
     @arguments = "gemspec - optional gemspec file name, will use the first *.gemspec if not specified"
     @usage = "#{program_name} [gemspec]"
   end
@@ -42,6 +43,8 @@ class Gem::Commands::ReleaseCommand < Gem::Command
     end
 
     def tag
-      TagCommand.new.invoke
+      tag = TagCommand.new
+      tag.options.merge! options
+      tag.execute
     end
 end

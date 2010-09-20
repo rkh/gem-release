@@ -8,10 +8,14 @@ class Gem::Commands::TagCommand < Gem::Command
 
   attr_reader :arguments, :usage
 
+  def self.set_options(obj)
+    obj.option :format, '-m', 'Tag name/message format (%s will be replaced with version)'
+    obj.option :commit, '-c', 'Creat a (potentially empty) commit before tagging'
+  end
+
   def initialize
     super 'tag', 'Create a git tag and push --tags to origin'
-    option :format, '-m', 'Tag name/message format (%s will be replaced with version)'
-    option :commit, '-c', 'Creat a (potentially empty) commit before tagging'
+    self.class.set_options(self)
   end
 
   def execute
