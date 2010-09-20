@@ -11,14 +11,20 @@ class Gem::Commands::TagCommand < Gem::Command
   def initialize
     super 'tag', 'Create a git tag and push --tags to origin'
     option :format, '-m', 'Tag name/message format (%s will be replaced with version)'
+    option :commit, '-c', 'Creat a (potentially empty) commit before tagging'
   end
 
   def execute
+    commit if options[:commit]
     tag
     push
   end
   
   protected
+    def commit
+      say "Creating empty commit"
+      `git commit --allow-empty -m "Release #{tag_name}"`
+    end
 
     def tag
       say "Creating git tag #{tag_name}"
