@@ -14,6 +14,14 @@ class TagCommandTest < MiniTest::Unit::TestCase
     command.stubs(:gem_version).returns('1.0.0')
     command.expects(:`).with("git tag -am 'tag v1.0.0' v1.0.0")
     command.expects(:`).with("git push --tags origin")
-    command.execute
+    command.invoke
+  end
+
+  test "tag_command supports custom formats" do
+    command = TagCommand.new
+    command.stubs(:gem_version).returns('1.0.0')
+    command.expects(:`).with("git tag -am 'tag 1.0.0' 1.0.0")
+    command.expects(:`).with("git push --tags origin")
+    command.invoke("--format=%s")
   end
 end

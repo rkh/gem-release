@@ -4,10 +4,13 @@ class Gem::Commands::TagCommand < Gem::Command
   include GemRelease
   include Helpers, CommandOptions
 
+  OPTIONS = { :commit => false, :format => 'v%s' }
+
   attr_reader :arguments, :usage
 
   def initialize
     super 'tag', 'Create a git tag and push --tags to origin'
+    option :format, '-m', 'Tag name/message format (%s will be replaced with version)'
   end
 
   def execute
@@ -28,6 +31,6 @@ class Gem::Commands::TagCommand < Gem::Command
     end
     
     def tag_name
-      "v#{gem_version}"
+      (options[:format] || OPTIONS[:format]) % gem_version
     end
 end
